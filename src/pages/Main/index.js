@@ -4,7 +4,7 @@ import api from "../../services/api";
 import logo from "../../assets/logo.svg";
 import "./index.css";
 
-export default class Main extends Component {
+class Main extends Component {
   state = {
     newBox: ""
   };
@@ -16,7 +16,7 @@ export default class Main extends Component {
       title: this.state.newBox
     });
 
-    console.log(response.data);
+    this.props.history.push(`/box/${response.data._id}`);
   };
 
   handleInputChange = e => {
@@ -39,3 +39,5 @@ export default class Main extends Component {
     );
   }
 }
+
+export default Main;
