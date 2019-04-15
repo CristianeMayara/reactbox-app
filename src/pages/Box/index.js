@@ -1,8 +1,10 @@
 import React, { Component } from "react";
-import api from "../../services/api";
+import { distanceInWords } from "date-fns";
+import pt from "date-fns/locale/pt";
 
 import { MdInsertDriveFile } from "react-icons/md";
 
+import api from "../../services/api";
 import logo from "../../assets/logo.svg";
 import "./styles.css";
 
@@ -31,7 +33,10 @@ class Box extends Component {
                   <MdInsertDriveFile size={24} color="#a5cfff" />
                   <strong>{file.title}</strong>
                 </a>
-                <span>{file.createdAt}</span>
+                <span>
+                  há{" "}
+                  {distanceInWords(file.createdAt, new Date(), { locale: pt })}
+                </span>
               </li>
             ))}
         </ul>
