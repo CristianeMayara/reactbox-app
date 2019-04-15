@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import socket from "socket.io-client";
 import Dropzone from "react-dropzone";
 import { distanceInWords } from "date-fns";
 import pt from "date-fns/locale/pt";
@@ -11,12 +12,29 @@ import "./styles.css";
 
 class Box extends Component {
   state = { box: {} };
+
   async componentDidMount() {
+    this.subscribeToNewFiles();
+
     const box = this.props.match.params.id;
     const response = await api.get(`boxes/${box}`);
 
     this.setState({ box: response.data });
+    console.log(response.data);
   }
+
+  subscribeToNewFiles = () => {
+    const box = this.props.match.params.id;
+    const io = socket("https://omnistack-backend.herokuapp.com");
+
+    io.emit("connectionRoom", box);
+
+    io.on("file", data => {
+      this.setState({
+        box: { ...this.setState.box, files: [data, ...this.state.box.files] }
+      });
+    });
+  };
 
   handleUpload = files => {
     files.forEach(file => {
