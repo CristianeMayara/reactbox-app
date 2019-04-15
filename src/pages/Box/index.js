@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import Dropzone from "react-dropzone";
 import { distanceInWords } from "date-fns";
 import pt from "date-fns/locale/pt";
 
@@ -17,6 +18,17 @@ class Box extends Component {
     this.setState({ box: response.data });
   }
 
+  handleUpload = files => {
+    files.forEach(file => {
+      const data = new FormData();
+      const box = this.props.match.params.id;
+
+      data.append("file", file);
+
+      api.post(`boxes/${box}/files`, data);
+    });
+  };
+
   render() {
     return (
       <div id="box-container">
@@ -24,6 +36,15 @@ class Box extends Component {
           <img src={logo} alt="" />
           <h1>{this.state.box.title}</h1>
         </header>
+
+        <Dropzone onDropAccepted={this.handleUpload}>
+          {({ getRootProps, getInputProps }) => (
+            <div className="upload" {...getRootProps()}>
+              <input {...getInputProps()} />
+              <p>Arraste arquivos ou clique aqui</p>
+            </div>
+          )}
+        </Dropzone>
 
         <ul>
           {this.state.box.files &&
